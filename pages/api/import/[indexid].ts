@@ -27,3 +27,12 @@ export default async function handler(
     indexSize: bulkInsertResult.indexSize,
   });
 }
+
+// 413 Body exceeded 1mb limit
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
+};

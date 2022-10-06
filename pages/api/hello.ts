@@ -1,13 +1,20 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { Client } from '@elastic/elasticsearch';
 
-type Data = {
-  name: string
-}
-
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse
 ) {
-  res.status(200).json({ name: 'John Doe' })
+  const client = new Client({
+    node: 'http://localhost:9200',
+  });
+
+  const result = await client.search({
+    index: 'my-index',
+    query: {
+      match: { hello: 'world' },
+    },
+  });
+
+  res.status(200).json(result.hits);
 }

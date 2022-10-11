@@ -23,6 +23,17 @@ type SwitchAliasReturn = {
   indexSize: string;
 };
 
+export type MappingPropertiesType = Record<
+  string,
+  {
+    type: 'text' | 'integer' | 'boolean' | 'date' | 'double';
+    analyzer?: string;
+    format?: string;
+  }
+>;
+
+export const analyzerList = ['turkish_lowercase', 'turkish_uppercase'];
+
 const generateNewIndexId = (aliasName: string) => {
   const clearIsoDateFormat = new Date()
     .toISOString()
@@ -82,11 +93,39 @@ export const switchAliasToLatestIndex = async (
 };
 
 export const createIndex = async (
-  aliasName: string
+  aliasName: string,
+  mappingProperties: MappingPropertiesType
 ): Promise<CreateIndexReturn> => {
   const newIndexName = generateNewIndexId(aliasName);
 
-  await client.indices.create({ index: newIndexName });
+  await client.indices.create({
+    index: newIndexName,
+    settings: {
+      analysis: {
+        filter: {
+          my_ascii_folding: {
+            preserve_original: true,
+            type: 'asciifolding',
+          },
+        },
+        analyzer: {
+          turkish_lowercase: {
+            type: 'custom',
+            tokenizer: 'standard',
+            filter: ['lowercase', 'my_ascii_folding'],
+          },
+          turkish_uppercase: {
+            type: 'custom',
+            tokenizer: 'standard',
+            filter: ['uppercase', 'my_ascii_folding'],
+          },
+        },
+      },
+    },
+    mappings: {
+      properties: mappingProperties,
+    },
+  });
   return {
     indexName: newIndexName,
     lastIndexName: '', // TODO: get last index for alias

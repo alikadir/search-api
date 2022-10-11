@@ -1,9 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { createIndex } from '../../../services/elasticSearchService';
+import {
+  createIndex,
+  MappingPropertiesType,
+} from '../../services/elasticSearchService';
 
 interface CustomRequestType extends NextApiRequest {
-  body: [any];
-  query: { vendorid: string };
+  body: {
+    vendorId: string;
+    fields?: MappingPropertiesType;
+  };
 }
 type ResponseType = {
   vendorId: string;
@@ -17,8 +22,12 @@ export default async function handler(
   req: CustomRequestType,
   res: NextApiResponse<ResponseType>
 ) {
-  const vendorId = req.query.vendorid;
-  const createIndexResult = await createIndex(vendorId);
+  const vendorId = req.body.vendorId;
+  const mappings = req.body.fields;
+  const createIndexResult = await createIndex(
+    vendorId,
+    mappings as MappingPropertiesType
+  );
 
   res.json({
     vendorId,

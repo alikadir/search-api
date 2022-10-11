@@ -3,6 +3,7 @@ import { beforeAll, expect } from '@jest/globals';
 import { Client } from '@elastic/elasticsearch';
 
 const aliasName = '55dda743-de78-4e91-a6af-efa1a975fb16';
+
 const indexId =
   aliasName + exportedForTesting.indexSeparator + '20220918103927';
 const indexList = [
@@ -83,7 +84,6 @@ jest.mock('@elastic/elasticsearch', () => {
     }),
   };
 });
-
 describe('Services', () => {
   beforeAll(() => {});
   it('Generate New Index', () => {

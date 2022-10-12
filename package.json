@@ -9,7 +9,7 @@
     "lint": "next lint",
     "test": "jest --watch",
     "test:ci": "jest --ci",
-    "start:server": "npm run build && pm2 start npm --name 'next-js' -- start"
+    "start:pm2": "pm2 start npm --name 'next-js' -- start"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.4.0",

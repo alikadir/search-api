@@ -158,7 +158,12 @@ export const bulkInsert = async (
 };
 
 export const search = async (aliasName: string, query: any) => {
-  const result = await client.search({ index: aliasName, query });
+  const maxReturnedItemCount = 100;
+  const result = await client.search({
+    index: aliasName,
+    query,
+    size: maxReturnedItemCount,
+  });
   return result.hits;
 };
 

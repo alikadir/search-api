@@ -32,7 +32,10 @@ export type MappingPropertiesType = Record<
   }
 >;
 
-export const analyzerList = ['turkish_lowercase', 'turkish_uppercase'];
+export const analyzerList = [
+  'turkish_lowercase_stemmer_ascii_folding',
+  'turkish_uppercase_stemmer_ascii_folding',
+];
 
 const generateNewIndexId = (aliasName: string) => {
   const clearIsoDateFormat = new Date()
@@ -107,17 +110,29 @@ export const createIndex = async (
             preserve_original: true,
             type: 'asciifolding',
           },
+          turkish_stemmer: {
+            type: 'stemmer',
+            language: 'turkish',
+          },
+          turkish_lowercase: {
+            type: 'lowercase',
+            language: 'turkish',
+          },
         },
         analyzer: {
-          turkish_lowercase: {
+          turkish_lowercase_stemmer_ascii_folding: {
             type: 'custom',
             tokenizer: 'standard',
-            filter: ['lowercase', 'my_ascii_folding'],
+            filter: [
+              'turkish_lowercase',
+              'my_ascii_folding',
+              'turkish_stemmer',
+            ],
           },
-          turkish_uppercase: {
+          turkish_uppercase_stemmer_ascii_folding: {
             type: 'custom',
             tokenizer: 'standard',
-            filter: ['uppercase', 'my_ascii_folding'],
+            filter: ['uppercase', 'my_ascii_folding', 'turkish_stemmer'],
           },
         },
       },
